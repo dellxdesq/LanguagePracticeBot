@@ -16,19 +16,20 @@ class TelegramBot:
         topics_text = "\n".join(f"- {topic}" for topic in topics)  # Формируем текстовый список тем
 
         # Подготавливаем клавиатуру для будущей реализации языков
-        keyboard = [
-            [KeyboardButton("Español (Spanish)"), KeyboardButton("中文 (Chinese)")],
-        ]
-        markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
+        #keyboard = [
+        #   [KeyboardButton("Español (Spanish)"), KeyboardButton("中文 (Chinese)")],
+        #]
+        #markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
 
         # Отправляем приветственное сообщение с темами
         await update.message.reply_text(
             f"Привет! Я бот для практики иностранного языка с искусственным интеллектом. "
-            f"Начнем наше общение на английском языке. Вот список доступных тем:\n\n"
+            f"В данный момент доступно общение на английском языке, но скоро появятся и другие. "
+            f"Вот пример тем, на которые вы можете пообщаться:\n\n"
             f"{topics_text}\n\n"
             f"Вы можете выбрать тему, написав её в чат, или предложить свою. "
-            f"Сменить язык пока нельзя, но скоро появится!",
-            reply_markup=markup
+            f"Чтобы прекратить общение напишите в чат /cancel",
+            #reply_markup=markup
         )
         return self.CHAT
 
