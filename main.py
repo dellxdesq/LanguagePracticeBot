@@ -1,4 +1,3 @@
-#BOT_TOKEN=7645375910:AAF1eaxwLsTFPHlqdPMOg-A-Oof_B1H34Cc
 import asyncio
 from dotenv import dotenv_values
 from bot import TelegramBot
