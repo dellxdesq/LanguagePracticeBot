@@ -23,7 +23,7 @@ async def start_command(message: types.Message, state: FSMContext):
             f"Вот пример тем, на которые вы можете пообщаться:\n\n"
             f"{topics_text}\n\n"
             f"Вы можете выбрать тему, написав её в чат, или предложить свою. "
-            f"Чтобы прекратить общение, напишите /cancel",
+            f"Чтобы прекратить общение, нажмите кнопку \"Отмена\"",
             reply_markup=cancel_menu
         )
         current_state = await state.get_state()
