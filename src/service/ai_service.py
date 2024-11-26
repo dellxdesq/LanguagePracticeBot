@@ -1,29 +1,19 @@
 from ollama import chat, ChatResponse
 import logging
-
+from src.settings.texts import ai_promt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 class OllamaAI:
     def __init__(self, model_name="llama3", max_history=10):
         self.model_name = model_name
+        self.is_first_message = True
         self.max_history = max_history
         self.messages = [
             {
                 "role": "system",
-                "content": (
-                    "You are an interesting and knowledgeable assistant."
-                    "Answer in a friendly and conversational manner."
-                    "Ask clarifying questions to keep the conversation going, "
-                    "but don't ask too many, 2 or 3 questions will do."
-                    "Analyze the users messages for grammatical, syntactical, or lexical errors, "
-                    "and provide clear and constructive feedback. "
-                    "Explain each mistake, if any, and suggest corrections. "
-                    "If there are no mistakes, encourage the user by pointing out what they did well. "
-                    "Maintain a friendly and supportive tone."
-                ),
+                "content": ai_promt,
             }
         ]
 
@@ -32,15 +22,16 @@ class OllamaAI:
         try:
             if len(self.messages) > self.max_history:
                 self.messages = self.messages[-self.max_history:]
+            if self.is_first_message:
+                user_input = f"Go discuss topic of {user_input}"
+                self.is_first_message = False  # После первого обращения флаг отключается
 
             self.messages.append({'role': 'user', 'content': user_input})
             logger.info(f"Отправляем запрос модели с историей: {self.messages}")
 
-            # Здесь вызывается метод Ollama chat
             response = chat(model=self.model_name, messages=self.messages)
             model_reply = response.message.content
             logger.info(f"Ответ модели: {model_reply}")
-
             self.messages.append({'role': 'assistant', 'content': model_reply})
             return model_reply
         except Exception as e:
