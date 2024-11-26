@@ -2,9 +2,9 @@ from aiogram import Router
 from aiogram import types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from src.settings.states import ChatStates
-from src.service.ai_service import OllamaAI
-from src.settings.keyboard import cancel_menu
+from settings.states import ChatStates
+from service.ai_service import OllamaAI
+from settings.keyboard import cancel_menu
 router = Router()
 
 ollama_ai = OllamaAI()
