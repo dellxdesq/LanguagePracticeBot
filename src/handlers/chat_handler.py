@@ -1,10 +1,10 @@
 from aiogram import types, Router
 from aiogram.fsm.context import FSMContext
-from settings.states import ChatStates
-from service.ai_service import OllamaAI
+from src.settings.states import ChatStates
+from src.service.ai_service import OllamaAI
 from aiogram import F
 #from bot import logger
-from handlers.cancel_handler import cancel_command
+from src.handlers.cancel_handler import cancel_command
 
 router = Router()
 ollama_ai = OllamaAI()

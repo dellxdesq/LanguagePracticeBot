@@ -2,7 +2,8 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 import asyncio
 from dotenv import dotenv_values
-from handlers import start_handler, chat_handler, cancel_handler
+from src.handlers import start_handler, chat_handler, cancel_handler
+
 
 async def main():
     config = dotenv_values("settings/config.env")
