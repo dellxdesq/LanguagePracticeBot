@@ -1,1 +1,2 @@
-src/settings/config.env
+.env
+__pycache__
