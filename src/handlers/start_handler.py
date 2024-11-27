@@ -1,3 +1,4 @@
+import logging
 from aiogram import Router
 from aiogram import types
 from aiogram.filters import Command
@@ -5,13 +6,28 @@ from aiogram.fsm.context import FSMContext
 from settings.states import ChatStates
 from service.ai_service import OllamaAI
 from settings.keyboard import cancel_menu
+from service.db import Database
+
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)  # Настроим вывод логов на консоль
+logger = logging.getLogger(__name__)  # Создаём логгер
+
 router = Router()
 
 ollama_ai = OllamaAI()
 
+db = Database()
+
 @router.message(Command("start"))
 async def start_command(message: types.Message, state: FSMContext):
     """Обработчик команды /start"""
+    user_id = message.from_user.id
+    username = message.from_user.username
+    full_name = message.from_user.full_name
+
+    # Проверка и создание профиля в базе данных
+    await db.create_user(user_id, username, full_name)
+
     #logger.info(f"Получена команда /start от пользователя: {message.from_user.id}")
     try:
         topics = ["Sport", "Music", "Literature", "Technology"]
@@ -32,5 +48,5 @@ async def start_command(message: types.Message, state: FSMContext):
         await state.set_state(ChatStates.CHAT)
         #logger.info(f"Состояние установлено: {ChatStates.CHAT}")
     except Exception as e:
-        #logger.error(f"Ошибка в обработчике /start: {e}")
+        logger.error(f"Ошибка в обработчике /start: {e}", exc_info=True)
         await message.answer("Произошла ошибка при выполнении команды /start")

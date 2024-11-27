@@ -4,9 +4,14 @@ import asyncio
 import os
 from dotenv import load_dotenv
 from handlers import start_handler, chat_handler, cancel_handler
+from service.db import Database
 
+db = Database()
 
 async def main():
+    # Инициализация базы данных
+    await db.init()
+
     # Загружаем переменные окружения из .env файла
     load_dotenv()
 
@@ -29,6 +34,9 @@ async def main():
     dp.include_router(cancel_handler.router)
 
     await dp.start_polling(bot)
+
+    # Закрытие соединения с базой данных
+    await db.close()
 
 if __name__ == "__main__":
     asyncio.run(main())
