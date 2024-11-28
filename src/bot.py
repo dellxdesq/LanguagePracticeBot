@@ -14,7 +14,7 @@ async def main():
     dp = Dispatcher(storage=storage)
 
     dp.include_router(start_handler.router)
-    dp.include_router(chat_handler.router)
+    dp.include_router(eng_chat_handler.router)
     dp.include_router(cancel_handler.router)
     dp.include_router(spanish_chat_handler.router)
 

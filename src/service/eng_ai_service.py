@@ -1,6 +1,6 @@
-from ollama import chat, ChatResponse
+from ollama import chat
 import logging
-from src.settings.texts import ai_promt
+from src.settings.texts import eng_ai_promt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ class OllamaAI:
         self.messages = [
             {
                 "role": "system",
-                "content": ai_promt,
+                "content": eng_ai_promt,
             }
         ]
 
