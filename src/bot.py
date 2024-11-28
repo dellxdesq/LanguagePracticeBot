@@ -2,7 +2,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 import asyncio
 from dotenv import dotenv_values
-from handlers import start_handler, chat_handler, cancel_handler
+from handlers import start_handler, eng_chat_handler, cancel_handler, spanish_chat_handler
 
 
 async def main():
@@ -16,6 +16,7 @@ async def main():
     dp.include_router(start_handler.router)
     dp.include_router(chat_handler.router)
     dp.include_router(cancel_handler.router)
+    dp.include_router(spanish_chat_handler.router)
 
     await dp.start_polling(bot)
 

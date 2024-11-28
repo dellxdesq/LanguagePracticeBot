@@ -18,9 +18,8 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
         await cancel_command(message, state)
         return
     if current_state != ChatStates.CHAT.state:
-        await message.answer("Что-то пошло не так. Попробуйте снова запустить /start")
+        await state.set_state(ChatStates.SPANISH_CHAT.state)
         return
-
     try:
         ai_response = ollama_ai.get_response(message.text)
         await message.answer(ai_response)

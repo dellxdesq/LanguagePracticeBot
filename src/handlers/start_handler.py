@@ -7,7 +7,7 @@ from src.settings.states import ChatStates
 from src.service.ai_service import OllamaAI
 from src.settings.keyboard import cancel_menu_with_language, language_menu
 from src.settings.texts import hello_text
-
+from src.service.bloom_service import BloomService
 
 router = Router()
 ollama_ai = OllamaAI()
@@ -52,3 +52,18 @@ async def select_language(message: types.Message, state: FSMContext):
         text=f"Вы выбрали язык: {selected_language}.",
         reply_markup=cancel_menu_with_language
     )
+
+@router.message(F.text == "Испанский")
+async def switch_to_spanish(message: types.Message, state: FSMContext):
+    """Обработчик выбора испанского языка"""
+    await state.update_data(language="Spanish")  # Сохраняем язык
+    await message.answer(
+        text="Вы выбрали испанский язык. Вы можете начать общение.",
+        reply_markup=cancel_menu_with_language
+    )
+    # Переводим пользователя в состояние испанского чата
+    await state.set_state(ChatStates.SPANISH_CHAT)
+    if ChatStates.SPANISH_CHAT:
+        print("Состояние установлено на SPANISH_CHAT")
+
+
