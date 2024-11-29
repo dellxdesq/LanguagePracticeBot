@@ -1,10 +1,9 @@
 from ollama import chat, ChatResponse
 import logging
-
+import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 class OllamaAI:
     def __init__(self, model_name="llama3", max_history=10):
@@ -26,6 +25,10 @@ class OllamaAI:
                 ),
             }
         ]
+
+        # Читаем параметры подключения из переменных окружения
+        self.ollama_host = os.getenv("OLLAMA_HOST", "localhost")
+        self.ollama_port = os.getenv("OLLAMA_PORT", "11434")
 
     def get_response(self, user_input: str) -> str:
         """Метод для получения ответа от модели с учетом истории диалога."""

@@ -7,8 +7,12 @@ WORKDIR /app
 # Копируем зависимости в контейнер
 COPY requirements.txt /app/
 
-# Устанавливаем переменные окружения
-RUN apt-get update && apt-get install -y libglib2.0-0 gcc
+# Установить зависимости системы
+RUN apt-get update && apt-get install -y \
+    curl \
+    gcc \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
