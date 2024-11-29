@@ -38,7 +38,7 @@ async def switch_to_spanish(message: types.Message, state: FSMContext):
 
 @router.message(Command("chinese"))
 async def switch_to_spanish(message: types.Message, state: FSMContext):
-    """Обработчик выбора испанского языка"""
+    """Обработчик выбора китайского языка"""
     await state.clear()  # Очищаем текущее состояние
     await state.set_state(ChatStates.CHINESE_CHAT)  # Устанавливаем новое состояние
     await message.answer(
