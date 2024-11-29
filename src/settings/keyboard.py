@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-cancel_menu_with_language = ReplyKeyboardMarkup(
+cancel_menu = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="Остановить диалог", callback_data="cancel")],
     ],

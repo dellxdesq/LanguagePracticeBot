@@ -12,9 +12,10 @@ ollama_ai = OllamaAI()
 async def chat_with_ai(message: types.Message, state: FSMContext):
     """Обработчик сообщений пользователя"""
     current_state = await state.get_state()
-    print(current_state)
-    test = message.text
-    print(test)
+    print(f"Текущие состояние: {current_state}")
+    user_message = message.text
+    print(f"Сообщение пользователя: {user_message}")
+
     if message.text == "Остановить диалог":
         await cancel_command(message, state)
         return

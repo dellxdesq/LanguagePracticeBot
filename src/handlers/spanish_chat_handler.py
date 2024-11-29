@@ -4,9 +4,10 @@ from aiogram.fsm.context import FSMContext
 from src.service.spanish_ai_service import SpanishOllamaAI
 from src.handlers.cancel_handler import cancel_command
 from src.settings.states import ChatStates
-router = Router()
 
+router = Router()
 spanish_ollama_ai = SpanishOllamaAI()
+
 @router.message(F.text, ChatStates.SPANISH_CHAT)
 async def spanish_chat_with_ai(message: types.Message, state: FSMContext):
     """Обработчик сообщений пользователя в испанском чате"""
