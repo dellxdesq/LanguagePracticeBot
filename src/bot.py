@@ -2,8 +2,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 import asyncio
 from dotenv import dotenv_values
-from handlers import start_handler, eng_chat_handler, cancel_handler, spanish_chat_handler
-
+from settings.routers import main_router
 
 async def main():
     config = dotenv_values("../config.env")
@@ -13,10 +12,7 @@ async def main():
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
 
-    dp.include_router(start_handler.router)
-    dp.include_router(eng_chat_handler.router)
-    dp.include_router(cancel_handler.router)
-    dp.include_router(spanish_chat_handler.router)
+    dp.include_router(main_router)
 
     await dp.start_polling(bot)
 

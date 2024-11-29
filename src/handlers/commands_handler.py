@@ -1,14 +1,11 @@
 from aiogram import Router
 from aiogram import types, F
 from aiogram.filters import Command
-
 from aiogram.fsm.context import FSMContext
 from src.settings.states import ChatStates
 from src.service.eng_ai_service import OllamaAI
-from src.settings.keyboard import cancel_menu_with_language, language_menu
-from src.settings.texts import hello_text
-
-from src.settings.texts import spanish_hello_text
+from src.settings.keyboard import cancel_menu_with_language
+from src.settings.texts import hello_text, spanish_hello_text
 
 router = Router()
 ollama_ai = OllamaAI()
@@ -28,15 +25,7 @@ async def start_command(message: types.Message, state: FSMContext):
     except Exception as e:
         await message.answer("Произошла ошибка при выполнении команды /start")
 
-@router.message(F.text == "Назад")
-async def go_back_to_main_menu(message: types.Message):
-    """Обработчик кнопки 'Назад'"""
-    await message.answer(
-        text="Возврат в основное меню.",
-        reply_markup=cancel_menu_with_language
-    )
-
-@router.message(F.text == "Испанский")
+@router.message(Command("spanish"))
 async def switch_to_spanish(message: types.Message, state: FSMContext):
     """Обработчик выбора испанского языка"""
     await state.clear()  # Очищаем текущее состояние
