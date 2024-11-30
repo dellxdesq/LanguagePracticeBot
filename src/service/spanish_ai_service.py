@@ -6,7 +6,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class SpanishOllamaAI:
-    def __init__(self, model_name="llama3", max_history=10):
+    def __init__(self, model_name="llama3.2", max_history=10):
         self.model_name = model_name
         self.is_first_message = True
         self.max_history = max_history
