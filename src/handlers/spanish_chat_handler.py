@@ -1,3 +1,4 @@
+import asyncio
 from aiogram import Router
 from aiogram import types, F
 from aiogram.fsm.context import FSMContext
@@ -21,6 +22,13 @@ async def spanish_chat_with_ai(message: types.Message, state: FSMContext):
         return
     try:
         ai_response = spanish_ollama_ai.get_response(user_message)
-        await message.answer(ai_response)
+        response_message = await message.answer("...")
+        # Постепенное добавление слов
+        words = ai_response.split()
+        current_text = ""
+        for word in words:
+            current_text += word + " "
+            await response_message.edit_text(current_text.strip())
+            await asyncio.sleep(0.3)
     except Exception as e:
         await message.answer(f"Произошла ошибка: {e}")

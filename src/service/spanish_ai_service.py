@@ -25,7 +25,7 @@ class SpanishOllamaAI:
             if len(self.messages) > self.max_history:
                 self.messages = self.messages[-self.max_history:]
             if self.is_first_message:
-                user_input = f"Go discuss topic of {user_input}"
+                user_input = f"Hablemos de {user_input}"
                 self.is_first_message = False  # После первого обращения флаг отключается
 
             self.messages.append({'role': 'user', 'content': user_input})
