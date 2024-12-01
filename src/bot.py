@@ -4,12 +4,13 @@ import asyncio
 import os
 from dotenv import load_dotenv, dotenv_values
 from service.db import Database
+from settings.routers import main_router
 
-from src.settings.routers import main_router
 db = Database()
 
 async def main():
-    config = dotenv_values("../config.env")
+    await db.init()
+    config = dotenv_values(".env")
 
     # Получение токена
     bot_token = config.get("BOT_TOKEN")

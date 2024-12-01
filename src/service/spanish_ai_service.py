@@ -1,6 +1,6 @@
 from ollama import chat, ChatResponse
 import logging
-from src.settings.texts import spanish_ai_promt
+from settings.texts import spanish_ai_promt
 import os
 
 logging.basicConfig(level=logging.INFO)

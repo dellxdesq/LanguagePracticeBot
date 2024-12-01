@@ -2,16 +2,26 @@ from aiogram import Router
 from aiogram import types, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from src.settings.states import ChatStates
-from src.service.eng_ai_service import OllamaAI
-from src.settings.keyboard import cancel_menu
-from src.settings.texts import hello_text, spanish_hello_text
+from settings.states import ChatStates
+from service.eng_ai_service import OllamaAI
+from settings.keyboard import cancel_menu
+from settings.texts import hello_text, spanish_hello_text
+from service.db import Database
 
 router = Router()
 ollama_ai = OllamaAI()
+db = Database()
+
 
 @router.message(Command("start"))
 async def start_command(message: types.Message, state: FSMContext):
+    """Обработчик команды /start"""
+    user_id = message.from_user.id
+    username = message.from_user.username
+    full_name = message.from_user.full_name
+
+    # Проверка и создание профиля в базе данных
+    await db.create_user(user_id, username, full_name)
     """Обработчик команды /start"""
     try:
         await message.answer(

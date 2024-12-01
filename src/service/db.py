@@ -1,6 +1,6 @@
 from tortoise import Tortoise
 from dotenv import load_dotenv
-from src.service.models import User
+from service.models import User
 import os
 
 load_dotenv()

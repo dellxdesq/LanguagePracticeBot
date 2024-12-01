@@ -55,7 +55,7 @@ services:
       /bin/bash -c "
       ollama serve &
       sleep 5 &&
-      ollama pull llama3 &&
+      ollama pull llama3.2 &&
       tail -f /dev/null
       "
 

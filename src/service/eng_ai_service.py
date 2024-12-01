@@ -1,6 +1,6 @@
 from ollama import chat
 import logging
-from src.settings.texts import eng_ai_promt
+from settings.texts import eng_ai_promt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

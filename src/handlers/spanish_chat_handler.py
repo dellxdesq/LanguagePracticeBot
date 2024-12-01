@@ -2,9 +2,9 @@ import asyncio
 from aiogram import Router
 from aiogram import types, F
 from aiogram.fsm.context import FSMContext
-from src.service.spanish_ai_service import SpanishOllamaAI
-from src.handlers.cancel_handler import cancel_command
-from src.settings.states import ChatStates
+from service.spanish_ai_service import SpanishOllamaAI
+from handlers.cancel_handler import cancel_command
+from settings.states import ChatStates
 
 router = Router()
 spanish_ollama_ai = SpanishOllamaAI()
