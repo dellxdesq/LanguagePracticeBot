@@ -22,12 +22,12 @@ services:
     restart: always
     entrypoint: >
       /bin/bash -c "
-      echo 'Waiting for Llama3 model to become ready...';
-      until curl -s http://ollama:11434/api/chat; do
-          echo 'Still waiting for model...';
+      echo 'Waiting for Llama3.2 model to become ready...';
+      until curl -s http://ollama:11434/api/tags | jq -e '.models[] | select(.name == \"llama3.2:latest\")' > /dev/null; do
+          echo 'Still waiting for Llama3.2 model...';
           sleep 10;
       done;
-      echo ' Llama3 model is ready!';
+      echo 'Llama3.2 model is ready!';
       python src/bot.py
       "
 

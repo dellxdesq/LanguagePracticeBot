@@ -1,6 +1,6 @@
 from tortoise import Tortoise
 from dotenv import load_dotenv
-from service.models import User
+from service.models import Message, User
 import os
 
 load_dotenv()
@@ -32,3 +32,13 @@ class Database:
     async def close(self):
         """Закрытие соединения с базой данных"""
         await Tortoise.close_connections()
+
+    async def save_message(self, user_id: int, sender: str, content: str, chat_state: str = None):
+        """Сохранение сообщения в базе данных."""
+        user = await User.get(user_id=user_id)
+        await Message.create(
+            user=user,
+            sender=sender,
+            content=content,
+            chat_state=chat_state
+        )
