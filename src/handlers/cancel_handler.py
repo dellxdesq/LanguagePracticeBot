@@ -5,7 +5,9 @@ from src.service.eng_ai_service import OllamaAI
 from src.settings.texts import goodbye_message
 
 router = Router()
+
 ollama_ai = OllamaAI()
+
 
 @router.callback_query(lambda c: c.data == "cancel", ChatStates.CHAT)
 async def cancel_command(message: types.Message, state: FSMContext):

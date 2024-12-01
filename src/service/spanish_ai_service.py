@@ -1,6 +1,7 @@
 from ollama import chat, ChatResponse
 import logging
 from src.settings.texts import spanish_ai_promt
+import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,6 +17,10 @@ class SpanishOllamaAI:
                 "content": spanish_ai_promt,
             }
         ]
+
+        # Читаем параметры подключения из переменных окружения
+        self.ollama_host = os.getenv("OLLAMA_HOST", "localhost")
+        self.ollama_port = os.getenv("OLLAMA_PORT", "11434")
 
     def get_response(self, user_input: str) -> str:
         if not user_input:

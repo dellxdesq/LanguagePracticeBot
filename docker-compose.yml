@@ -1,0 +1,64 @@
+version: "3.8"
+
+services:
+  bot:
+    build:
+      context: .
+    container_name: language_practice_bot
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - DB_HOST=pg
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434
+    depends_on:
+      - pg
+      - ollama
+    volumes:
+      - .:/app
+    restart: always
+    entrypoint: >
+      /bin/bash -c "
+      echo 'Waiting for Llama3 model to become ready...';
+      until curl -s http://ollama:11434/api/chat; do
+          echo 'Still waiting for model...';
+          sleep 10;
+      done;
+      echo ' Llama3 model is ready!';
+      python src/bot.py
+      "
+
+  pg:
+    image: postgres:15
+    container_name: language_practice_pg
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  ollama:
+    image: ollama/ollama
+    container_name: language_practice_ollama
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    restart: always
+    entrypoint: >
+      /bin/bash -c "
+      ollama serve &
+      sleep 5 &&
+      ollama pull llama3 &&
+      tail -f /dev/null
+      "
+
+volumes:
+  pgdata:
+  ollama:

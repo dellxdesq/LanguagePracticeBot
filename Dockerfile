@@ -1,11 +1,24 @@
-FROM python:3.12.3
+# Используем официальный образ Python
+FROM python:3.13-slim
 
-COPY requirements.txt .
+# Устанавливаем рабочую директорию внутри контейнера
+WORKDIR /app
 
+# Копируем зависимости в контейнер
+COPY requirements.txt /app/
+
+# Установить зависимости системы
+RUN apt-get update && apt-get install -y \
+    curl \
+    gcc \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
 
-WORKDIR /usr/src/app
+# Копируем всю папку проекта в контейнер
+COPY . /app/
 
-COPY ./src /usr/src/app
-
+# Запускаем бота
 CMD ["python", "src/bot.py"]
