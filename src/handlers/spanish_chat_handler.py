@@ -21,14 +21,8 @@ async def spanish_chat_with_ai(message: types.Message, state: FSMContext):
         await cancel_command(message, state)
         return
     try:
+        await message.answer("Печатает...✍🏻")
         ai_response = spanish_ollama_ai.get_response(user_message)
-        response_message = await message.answer("...")
-        # Постепенное добавление слов
-        words = ai_response.split()
-        current_text = ""
-        for word in words:
-            current_text += word + " "
-            await response_message.edit_text(current_text.strip())
-            await asyncio.sleep(0.3)
+        await message.answer(ai_response)
     except Exception as e:
         await message.answer(f"Произошла ошибка: {e}")
