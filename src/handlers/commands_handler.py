@@ -22,18 +22,32 @@ async def start_command(message: types.Message, state: FSMContext):
 
     # Проверка и создание профиля в базе данных
     await db.create_user(user_id, username, full_name)
+
+    # Проверка наличия активного диалога
+    active_chat = await db.get_active_chat(user_id=user_id)
+
     """Обработчик команды /start"""
     try:
-        await message.answer(
-            text=hello_text,
-            reply_markup=cancel_menu
-        )
-        current_state = await state.get_state()
-        print(current_state)
-
-        await state.set_state(ChatStates.CHAT)
+        if active_chat:
+            # Если есть активный диалог, уведомляем пользователя
+            await message.answer(
+                text=(
+                    "У вас уже есть активный диалог. Вы можете продолжить его. "
+                    "Если хотите завершить текущий диалог, используйте команду /cancel."
+                ),
+                reply_markup=cancel_menu
+            )
+            await state.set_state(ChatStates.CHAT)
+        else:
+            # Если активного диалога нет, создаём новый
+            chat_id = await db.create_chat(user_id=user_id, chat_state=ChatStates.CHAT.state.split(":")[1])
+            await message.answer(
+                text=hello_text,
+                reply_markup=cancel_menu
+            )
+            await state.set_state(ChatStates.CHAT)
     except Exception as e:
-        await message.answer("Произошла ошибка при выполнении команды /start")
+        await message.answer(f"Произошла ошибка: {e}")
 
 @router.message(Command("spanish"))
 async def switch_to_spanish(message: types.Message, state: FSMContext):
