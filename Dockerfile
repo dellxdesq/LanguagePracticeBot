@@ -11,6 +11,7 @@ COPY requirements.txt /app/
 RUN apt-get update && apt-get install -y \
     curl \
     gcc \
+    jq \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 

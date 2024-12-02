@@ -1,7 +1,8 @@
 from tortoise import Tortoise
 from dotenv import load_dotenv
-from service.models import User
+from service.models import Message, User, UserChat
 import os
+import uuid
 
 load_dotenv()
 
@@ -32,3 +33,39 @@ class Database:
     async def close(self):
         """Закрытие соединения с базой данных"""
         await Tortoise.close_connections()
+
+    async def save_message(self, user_id: int, sender: str, content: str, chat_state: str = None, chat_id: str = None):
+        """Сохранение сообщения в базе данных."""
+        user = await User.get(user_id=user_id)
+        await Message.create(
+            user=user,
+            sender=sender,
+            content=content,
+            chat_state=chat_state,
+            chat_id=chat_id  # Учет chat_id
+        )
+
+    async def create_chat(self, user_id: int, chat_state: str):
+        """Создание нового чата для пользователя"""
+        chat_id = str(uuid.uuid4())  # Генерация нового уникального chat_id
+        user = await User.get(user_id=user_id)
+        await UserChat.create(user=user, chat_id=chat_id, chat_state=chat_state)
+        return chat_id
+
+    async def get_active_chat(self, user_id: int, chat_state: str = None):
+        """
+        Получение активного чата для пользователя с учётом языка
+        :param user_id: ID пользователя
+        :param chat_state: Состояние чата (например, "SPANISH_CHAT" или "CHAT")
+        :return: Активный чат или None
+        """
+        query = UserChat.filter(user_id=user_id, is_active=True)
+        if chat_state:
+            query = query.filter(chat_state=chat_state)
+        return await query.first()
+
+
+    async def get_chat_history(self, chat_id: str):
+        """Получение истории чата по chat_id."""
+        messages = await Message.filter(chat_id=chat_id).order_by("timestamp").values("sender", "content")
+        return messages

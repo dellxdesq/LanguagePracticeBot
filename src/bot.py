@@ -5,8 +5,7 @@ import os
 from dotenv import load_dotenv, dotenv_values
 from service.db import Database
 from settings.routers import main_router
-
-db = Database()
+from settings.shared import db
 
 async def main():
     await db.init()
