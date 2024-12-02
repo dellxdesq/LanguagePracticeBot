@@ -45,7 +45,11 @@ class SpanishOllamaAI:
             logger.error(f"Ошибка при запросе к Ollama: {e}")
             return f"Произошла ошибка при запросе к Ollama: {e}"
 
-
+    def set_history(self, history: list):
+        """Загружает историю из базы данных."""
+        self.messages = [
+            {"role": "system", "content": spanish_ai_promt}
+        ] + [{"role": "user" if m["sender"] == "user" else "assistant", "content": m["content"]} for m in history]
 
 
 

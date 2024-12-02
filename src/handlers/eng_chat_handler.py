@@ -20,7 +20,7 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
     user_message = message.text
 
     # Получаем активный чат
-    active_chat = await db.get_active_chat(user_id=user_id)
+    active_chat = await db.get_active_chat(user_id=user_id, chat_state=ChatStates.CHAT.state.split(":")[1])
 
     if not active_chat:
         await message.answer("У вас нет активного чата. Используйте команду /start для начала нового диалога.")
@@ -57,7 +57,7 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
             user_id=user_id,
             sender=SENDERS["bot"],
             content=ai_response,
-            chat_state="ENG_CHAT",
+            chat_state=state_name,
             chat_id=chat_id
         )
 

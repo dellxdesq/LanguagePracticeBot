@@ -52,9 +52,18 @@ class Database:
         await UserChat.create(user=user, chat_id=chat_id, chat_state=chat_state)
         return chat_id
 
-    async def get_active_chat(self, user_id: int):
-        """Получение активного чата для пользователя"""
-        return await UserChat.filter(user_id=user_id, is_active=True).first()
+    async def get_active_chat(self, user_id: int, chat_state: str = None):
+        """
+        Получение активного чата для пользователя с учётом языка
+        :param user_id: ID пользователя
+        :param chat_state: Состояние чата (например, "SPANISH_CHAT" или "CHAT")
+        :return: Активный чат или None
+        """
+        query = UserChat.filter(user_id=user_id, is_active=True)
+        if chat_state:
+            query = query.filter(chat_state=chat_state)
+        return await query.first()
+
 
     async def get_chat_history(self, chat_id: str):
         """Получение истории чата по chat_id."""
