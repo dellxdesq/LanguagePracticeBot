@@ -15,28 +15,22 @@ ollama_ai = OllamaAI()
 
 @router.message(F.text, ChatStates.CHAT)
 async def chat_with_ai(message: types.Message, state: FSMContext):
-    """Обработчик сообщений пользователя в чате на английском"""
+
     user_id = message.from_user.id
     user_message = message.text
 
-    # Получаем активный чат
     active_chat = await db.get_active_chat(user_id=user_id, chat_state=ChatStates.CHAT.state.split(":")[1])
-
     if not active_chat:
         await message.answer("У вас нет активного чата. Используйте команду /start для начала нового диалога.")
         return
 
     chat_id = active_chat.chat_id
-
-    # Загружаем историю диалога из базы данных
     history = await db.get_chat_history(chat_id=chat_id)
     ollama_ai.set_history(history)
 
-    # Получаем текущее состояние без префикса
     current_state = await state.get_state()
     state_name = current_state.split(":")[1] if current_state else None
 
-    # Сохраняем сообщение пользователя
     await db.save_message(
         user_id=user_id,
         sender=SENDERS["user"],
@@ -52,7 +46,6 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
         await message.answer("Печатает...✍🏻")
         ai_response = ollama_ai.get_response(user_message)
 
-        # Сохраняем ответ бота
         await db.save_message(
             user_id=user_id,
             sender=SENDERS["bot"],

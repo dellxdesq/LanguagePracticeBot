@@ -18,7 +18,6 @@ class OllamaAI:
         ]
 
     def get_response(self, user_input: str) -> str:
-        """Метод для получения ответа от модели с учетом истории диалога."""
         try:
             if len(self.messages) > self.max_history:
                 self.messages = self.messages[-self.max_history:]
@@ -35,7 +34,6 @@ class OllamaAI:
             return f"Произошла ошибка при запросе к Ollama: {e}"
     
     def set_history(self, history: list):
-        """Загружает историю из базы данных."""
         self.messages = [
             {"role": "system", "content": eng_ai_promt}
         ] + [{"role": "user" if m["sender"] == "user" else "assistant", "content": m["content"]} for m in history]

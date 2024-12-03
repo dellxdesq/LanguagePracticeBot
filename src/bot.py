@@ -11,7 +11,6 @@ async def main():
     await db.init()
     config = dotenv_values(".env")
 
-    # Получение токена
     bot_token = config.get("BOT_TOKEN")
 
     bot = Bot(token=bot_token)
@@ -22,7 +21,6 @@ async def main():
 
     await dp.start_polling(bot)
 
-    # Закрытие соединения с базой данных
     await db.close()
 
 if __name__ == "__main__":

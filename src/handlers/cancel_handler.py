@@ -6,13 +6,9 @@ from settings.texts import goodbye_message
 from settings.shared import db
 
 router = Router()
-
 ollama_ai = OllamaAI()
 
-
-@router.callback_query(lambda c: c.data == "cancel", ChatStates.CHAT)
 async def cancel_command(message: types.Message, state: FSMContext):
-    """Обработчик команды /cancel"""
     user_id = message.from_user.id
 
     try:
@@ -22,7 +18,7 @@ async def cancel_command(message: types.Message, state: FSMContext):
             if active_chat:
                 active_chat.is_active = False
             await active_chat.save()
-            
+
             await state.clear()
             await message.answer(goodbye_message)
         else:

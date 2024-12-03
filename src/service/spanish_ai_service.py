@@ -18,14 +18,10 @@ class SpanishOllamaAI:
             }
         ]
 
-        # Читаем параметры подключения из переменных окружения
         self.ollama_host = os.getenv("OLLAMA_HOST", "localhost")
         self.ollama_port = os.getenv("OLLAMA_PORT", "11434")
 
     def get_response(self, user_input: str) -> str:
-        if not user_input:
-            print("Сообщение не дошло блять")
-        """Метод для получения ответа от модели с учетом истории диалога."""
         try:
             if len(self.messages) > self.max_history:
                 self.messages = self.messages[-self.max_history:]
@@ -42,7 +38,6 @@ class SpanishOllamaAI:
             return f"Произошла ошибка при запросе к Ollama: {e}"
 
     def set_history(self, history: list):
-        """Загружает историю из базы данных."""
         self.messages = [
             {"role": "system", "content": spanish_ai_promt}
         ] + [{"role": "user" if m["sender"] == "user" else "assistant", "content": m["content"]} for m in history]
