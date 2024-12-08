@@ -39,7 +39,7 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
         chat_id=chat_id
     )
 
-    if user_message.lower() == "остановить диалог" or user_message == "/cancel":
+    if user_message.lower() == "очистить историю" or user_message == "/clear":
         await cancel_command(message, state)
         return
     try:
