@@ -3,9 +3,9 @@ from aiogram import types, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from settings.states import ChatStates
-from service.eng_ai_service import OllamaAI
+from service.ai_service import OllamaAI
 from settings.keyboard import cancel_menu
-from settings.texts import hello_text, spanish_hello_text
+from settings.texts import hello_text
 from settings.shared import db
 
 router = Router()

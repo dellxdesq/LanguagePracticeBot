@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State
 from aiogram import F
 from settings.states import ChatStates
-from service.eng_ai_service import OllamaAI
+from service.ai_service import OllamaAI
 from handlers.cancel_handler import cancel_command
 from settings.shared import db
 from settings.constants import SENDERS
@@ -15,9 +15,13 @@ ollama_ai = OllamaAI()
 
 @router.message(F.text, ChatStates.CHAT)
 async def chat_with_ai(message: types.Message, state: FSMContext):
-
     user_id = message.from_user.id
     user_message = message.text
+
+    # Обработка команды остановки диалога
+    if user_message.lower() == "остановить диалог" or user_message == "/clear":
+        await cancel_command(message, state)
+        return
 
     active_chat = await db.get_active_chat(user_id=user_id, chat_state=ChatStates.CHAT.state.split(":")[1])
     if not active_chat:
@@ -39,12 +43,12 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
         chat_id=chat_id
     )
 
-    if user_message.lower() == "очистить историю" or user_message == "/clear":
-        await cancel_command(message, state)
-        return
     try:
-        await message.answer("Печатает...✍🏻")
+        typing_message = await message.answer("Печатает...✍🏻")
+
         ai_response = ollama_ai.get_response(user_message)
+
+        await typing_message.delete()
 
         await db.save_message(
             user_id=user_id,
