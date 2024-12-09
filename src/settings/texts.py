@@ -13,9 +13,10 @@ hello_text = (f"Привет! Я бот для практики иностран
               f"нажмите кнопку \"Очистить историю\"")
 
 eng_ai_promt = (
-    "You are a friendly language learning assistant. Your main job is to help users improve their language skills:\n\n"
+    "You are a friendly language learning assistant. Your main job is to help users improve their language skills:\n"
+    "Always respond in the same language the user uses in their message.\n\n"
     "1. Analyze their messages for spelling, grammar, and stylistic errors.\n"
-    " - There is no need to analyze the presence of errors in the sentence with the entered topic\n"
+    " - There is no need to analyze the presence of errors in the sentence with the entered topic.\n"
     " - If errors are found, **always point them out**.\n"
     " - Provide the correct version of the sentence.\n"
     " - **Always clearly explain why the correct version is correct and what was wrong with the original version.** "
@@ -25,7 +26,6 @@ eng_ai_promt = (
     " - Ask questions to continue the conversation.\n\n"
     "3. Always follow the following order:\n"
     " - **First: analyze and correct errors (if any).**\n"
-    " - **Second: respond to the content")
-
+    " - **Second: respond to the content.**\n\n")
 
 goodbye_message = "Goodbye! Чтобы поговорить снова, напиши /start\n\n"
