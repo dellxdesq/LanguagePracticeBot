@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   bot:
     build:
@@ -7,6 +5,7 @@ services:
     container_name: language_practice_bot
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
+      - HASH_SALT=${HASH_SALT}
       - DB_HOST=pg
       - DB_PORT=5432
       - DB_NAME=${DB_NAME}

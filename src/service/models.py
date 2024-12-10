@@ -2,16 +2,15 @@ from tortoise import fields
 from tortoise.models import Model
 
 class User(Model):
-    user_id = fields.BigIntField(pk=True)
-    username = fields.CharField(max_length=255, null=True)
-    full_name = fields.CharField(max_length=255, null=True)
+    unique_hash = fields.CharField(max_length=64, pk=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
     class Meta:
         table = "users"
 
 class Message(Model):
     id = fields.IntField(pk=True)
-    user = fields.ForeignKeyField("models.User", related_name="messages")
+    user = fields.ForeignKeyField("models.User", related_name="messages", to_field="unique_hash")
     sender = fields.CharField(max_length=10)
     content = fields.TextField()
     chat_state = fields.CharField(max_length=50, null=True)
@@ -26,11 +25,10 @@ class Message(Model):
 
 class UserChat(Model):
     chat_id = fields.CharField(max_length=100, pk=True)
-    user = fields.ForeignKeyField("models.User", related_name="chats")
+    user = fields.ForeignKeyField("models.User", related_name="chats", to_field="unique_hash")
     chat_state = fields.CharField(max_length=50)
     is_active = fields.BooleanField(default=True)
     timestamp = fields.DatetimeField(auto_now_add=True)
 
     class Meta:
         table = "user_chats"
-

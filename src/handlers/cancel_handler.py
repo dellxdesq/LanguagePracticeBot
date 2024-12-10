@@ -9,17 +9,18 @@ from service.models import UserChat
 router = Router()
 ollama_ai = OllamaAI()
 
-#Заглушка
+# Заглушка для команды отмены
 async def cancel_command(message: types.Message, state: FSMContext):
-    current_state = await state.get_state()
-    if current_state is None:
+    user_id = message.from_user.id
+    username = message.from_user.username or "anonymous"  # Имя может быть None
+
+    user = await db.get_user(user_id=user_id, username=username)
+
+    active_chat = await db.get_active_chat(user_id=user_id, username=username, chat_state=ChatStates.CHAT.state.split(":")[1])
+
+    if active_chat is None:
         await message.answer("У вас нет активного диалога.")
-        return
+    else:
+        await state.clear()
 
-    # Сброс состояния
-    await state.clear()
-
-    # Ответ пользователю
-    await message.answer(goodbye_message)
-
-
+        await message.answer(goodbye_message)

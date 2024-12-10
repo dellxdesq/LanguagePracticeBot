@@ -1,6 +1,5 @@
 from aiogram import types, Router
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State
 from aiogram import F
 from settings.states import ChatStates
 from service.ai_service import OllamaAI
@@ -16,6 +15,7 @@ ollama_ai = OllamaAI()
 @router.message(F.text, ChatStates.CHAT)
 async def chat_with_ai(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
+    username = message.from_user.username or "anonymous"  # Имя может быть None
     user_message = message.text
 
     # Обработка команды остановки диалога
@@ -23,10 +23,8 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
         await cancel_command(message, state)
         return
 
-    active_chat = await db.get_active_chat(user_id=user_id, chat_state=ChatStates.CHAT.state.split(":")[1])
-    if not active_chat:
-        await message.answer("У вас нет активного чата. Используйте команду /start для начала нового диалога.")
-        return
+    user = await db.get_user(user_id=user_id, username=username)
+    active_chat = await db.get_active_chat(user_id=user_id, username=username, chat_state=ChatStates.CHAT.state.split(":")[1])
 
     chat_id = active_chat.chat_id
     history = await db.get_chat_history(chat_id=chat_id)
@@ -37,6 +35,7 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
 
     await db.save_message(
         user_id=user_id,
+        username=username,
         sender=SENDERS["user"],
         content=user_message,
         chat_state=state_name,
@@ -52,6 +51,7 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
 
         await db.save_message(
             user_id=user_id,
+            username=username,
             sender=SENDERS["bot"],
             content=ai_response,
             chat_state=state_name,
