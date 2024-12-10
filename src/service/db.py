@@ -61,6 +61,17 @@ class Database:
             query = query.filter(chat_state=chat_state)
         return await query.first()
 
+    async def end_active_chat(self, user_id: int, username: str):
+        unique_hash = generate_user_hash(user_id, username)
+        active_chat = await UserChat.filter(user_id=unique_hash, is_active=True).first()
+
+        if active_chat:
+            # Завершаем активный чат, ставим is_active в False
+            active_chat.is_active = False
+            await active_chat.save()
+            return True  # Успешно завершили чат
+        return False  # Не найден активный чат для завершения    
+
     async def get_chat_history(self, chat_id: str):
         messages = await Message.filter(chat_id=chat_id).order_by("timestamp").values("sender", "content")
         return messages
