@@ -7,7 +7,7 @@ from handlers.cancel_handler import cancel_command
 from settings.shared import db
 from settings.constants import SENDERS
 import asyncio
-
+import re
 router = Router()
 ollama_ai = OllamaAI()
 
@@ -43,12 +43,19 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
     )
 
     try:
+        # Получаем ответ от AI
         typing_message = await message.answer("Печатает...✍🏻")
 
+        # Получаем ответ от модели
         ai_response = ollama_ai.get_response(user_message)
 
+        # Удаляем сообщение "Печатает..."
         await typing_message.delete()
 
+        # Форматируем ответ
+        formatted_response = format_ai_response(ai_response)
+
+        # Сохраняем сообщение в базе данных
         await db.save_message(
             user_id=user_id,
             username=username,
@@ -58,6 +65,25 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
             chat_id=chat_id
         )
 
-        await message.answer(ai_response)
+        # Отправляем отформатированный ответ пользователю
+        await message.answer(formatted_response, parse_mode='MarkdownV2')
     except Exception as e:
         await message.answer(f"Произошла ошибка: {e}")
+
+def format_ai_response(ai_response):
+    # Экранируем специальные символы для MarkdownV2
+    def escape_markdown_v2(text):
+        return re.sub(r'([_*[\]()~`>#+\-=|{}.!])', r'\\\1', text)
+
+    lines = ai_response.splitlines()  # Разбиваем текст на строки
+    formatted_lines = []
+
+    for line in lines:
+        if line.startswith("**"):  # Если строка начинается с **, убираем их
+            formatted_lines.append(escape_markdown_v2(line[2:].strip()))
+        elif line.startswith("*"):  # Если строка начинается с *, убираем её
+            formatted_lines.append(escape_markdown_v2(line[1:].strip()))
+        else:  # Остальные строки обрабатываем только для экранирования
+            formatted_lines.append(escape_markdown_v2(line))
+
+    return "\n".join(formatted_lines)
