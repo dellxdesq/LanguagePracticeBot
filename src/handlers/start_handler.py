@@ -1,16 +1,16 @@
-from aiogram import Router, types
+from aiogram import Router, types, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from settings.states import ChatStates
 from settings.keyboard import cancel_menu
 from settings.texts import hello_text_1, hello_text_2
 from settings.shared import db
-from service.db import generate_user_hash 
+from service.db import generate_user_hash
 
 router = Router()
 
-@router.message(Command("start"))
-async def start_command(message: types.Message, state: FSMContext):
+# Общий метод
+async def handle_start_logic(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     username = message.from_user.username or "anonymous"  # Имя может быть None
 
@@ -22,7 +22,7 @@ async def start_command(message: types.Message, state: FSMContext):
     if not active_chat:
         chat_id = await db.create_chat(user_id=user_id, username=username, chat_state=ChatStates.CHAT.state.split(":")[1])
 
- # Отправка первого сообщения
+    # Отправка первого сообщения
     await message.answer(
         text=hello_text_1,
         reply_markup=cancel_menu
@@ -35,3 +35,13 @@ async def start_command(message: types.Message, state: FSMContext):
     )
 
     await state.set_state(ChatStates.CHAT)
+
+# Обработчик команды /start
+@router.message(Command("start"))
+async def start_command(message: types.Message, state: FSMContext):
+    await handle_start_logic(message, state)
+
+# Обработчик кнопки "Старт"
+@router.message(F.text == "Старт")
+async def button_start(message: types.Message, state: FSMContext):
+    await handle_start_logic(message, state)

@@ -2,14 +2,14 @@ from aiogram import types, Router
 from aiogram.fsm.context import FSMContext
 from aiogram import F
 from settings.states import ChatStates
-from service.ai_service import OllamaAI
+from service.ai_service import ChatGPT42AI
 from handlers.cancel_handler import cancel_command
 from settings.shared import db
 from settings.constants import SENDERS
 import asyncio
 import re
 router = Router()
-ollama_ai = OllamaAI()
+ollama_ai = ChatGPT42AI()
 
 
 @router.message(F.text, ChatStates.CHAT)
@@ -43,17 +43,17 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
     )
 
     try:
-        # Получаем ответ от AI
+        # Отправка уведомления "Печатает..."
         typing_message = await message.answer("Печатает...✍🏻")
 
-        # Получаем ответ от модели
-        ai_response = ollama_ai.get_response(user_message)
+        # Получаем ответ от AI
+        ai_response = await ollama_ai.get_response(user_message)
 
         # Удаляем сообщение "Печатает..."
         await typing_message.delete()
 
         # Форматируем ответ
-        formatted_response = format_ai_response(ai_response)
+        formatted_response = format_ai_response_html(ai_response)
 
         # Сохраняем сообщение в базе данных
         await db.save_message(
@@ -66,24 +66,34 @@ async def chat_with_ai(message: types.Message, state: FSMContext):
         )
 
         # Отправляем отформатированный ответ пользователю
-        await message.answer(formatted_response, parse_mode='MarkdownV2')
+        await message.answer(formatted_response, parse_mode='HTML')
     except Exception as e:
         await message.answer(f"Произошла ошибка: {e}")
 
-def format_ai_response(ai_response):
-    # Экранируем специальные символы для MarkdownV2
-    def escape_markdown_v2(text):
-        return re.sub(r'([_*[\]()~`>#+\-=|{}.!])', r'\\\1', text)
 
+def format_ai_response_html(ai_response):
     lines = ai_response.splitlines()  # Разбиваем текст на строки
     formatted_lines = []
 
     for line in lines:
-        if line.startswith("**"):  # Если строка начинается с **, убираем их
-            formatted_lines.append(escape_markdown_v2(line[2:].strip()))
-        elif line.startswith("*"):  # Если строка начинается с *, убираем её
-            formatted_lines.append(escape_markdown_v2(line[1:].strip()))
-        else:  # Остальные строки обрабатываем только для экранирования
-            formatted_lines.append(escape_markdown_v2(line))
+        # Если строка начинается с **, убираем их
+        if line.startswith("**"):
+            line = line[2:].strip()
+        # Если строка начинается с *, убираем её
+        elif line.startswith("*"):
+            line = line[1:].strip()
+
+        # Заменяем слова в кавычках "текст" на <b>текст</b>
+        line = re.sub(r'"(.*)"', r'<b>\1</b>', line)
+
+        # Убираем все ** в строке
+        line = line.replace("**", "")
+        # Убираем все * в строке
+
+        line = line.replace("*", "")
+
+        # Добавляем строку в список
+        formatted_lines.append(line)
 
     return "\n".join(formatted_lines)
+

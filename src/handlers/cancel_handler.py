@@ -1,13 +1,14 @@
 from aiogram import types, Router
 from aiogram.fsm.context import FSMContext
 from settings.states import ChatStates
-from service.ai_service import OllamaAI
+from service.ai_service import ChatGPT42AI
 from settings.texts import goodbye_message
 from settings.shared import db
 from service.models import UserChat
+from settings.keyboard import cancel_menu
 
 router = Router()
-ollama_ai = OllamaAI()
+ollama_ai = ChatGPT42AI()
 
 # Заглушка для команды отмены
 async def cancel_command(message: types.Message, state: FSMContext):
@@ -23,4 +24,7 @@ async def cancel_command(message: types.Message, state: FSMContext):
         await message.answer("У вас нет активного диалога.")
     else:
         await state.clear()  # Сбрасываем состояние
-        await message.answer(goodbye_message)  # Сообщаем, что диалог завершен
+        await message.answer(
+            text=goodbye_message,
+            reply_markup=cancel_menu  # Прикрепляем клавиатуру с кнопкой
+        )
