@@ -1,14 +1,17 @@
 import aiohttp
 import logging
 from settings.texts import eng_ai_promt
+from dotenv import dotenv_values
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class ChatGPT42AI:
     def __init__(self, max_history=10):
-        self.api_key = ""
-        self.url = "https://chatgpt-42.p.rapidapi.com/gpt4"
+        config = dotenv_values(".env")
+
+        self.api_key = config.get("API_KEY")
+        self.url = config.get("API_URL")
         self.headers = {
             "Content-Type": "application/json",
             "X-RapidAPI-Key": self.api_key,
