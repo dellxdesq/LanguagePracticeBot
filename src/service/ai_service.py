@@ -47,7 +47,7 @@ class ChatGPT42AI:
                 "top_k": 5,
                 "top_p": 0.9,
                 "image": "",
-                "max_tokens": 228,
+                "max_tokens": 256,
                 "web_access": False
             }
 
