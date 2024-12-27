@@ -2,17 +2,18 @@ import aiohttp
 import logging
 from dotenv import dotenv_values
 from settings.texts import eng_ai_promt
-
+import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
+from dotenv import load_dotenv, dotenv_values
+load_dotenv()
 class ChatGPT42AI:
+
     def __init__(self, max_history=10):
         config = dotenv_values(".env")
-
-        self.api_key = config.get("API_KEY")
-        self.url = config.get("API_URL")
+        load_dotenv()
+        self.api_key = os.getenv("API_KEY")
+        self.url = os.getenv("API_URL")
         self.headers = {
             "Content-Type": "application/json",
             "x-rapidapi-key": self.api_key,
@@ -46,7 +47,7 @@ class ChatGPT42AI:
                 "top_k": 5,
                 "top_p": 0.9,
                 "image": "",
-                "max_tokens": 200,
+                "max_tokens": 228,
                 "web_access": False
             }
 

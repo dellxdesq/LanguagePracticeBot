@@ -28,11 +28,7 @@ async def handle_start_logic(message: types.Message, state: FSMContext):
         reply_markup=cancel_menu
     )
 
-    # Отправка второго сообщения с темами и уточнениями
-    await message.answer(
-        text=hello_text_2,
-        reply_markup=cancel_menu
-    )
+    # Отправка второго сообщения с темами и уточнения
 
     await state.set_state(ChatStates.CHAT)
 

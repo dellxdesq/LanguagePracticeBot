@@ -7,11 +7,12 @@ from service.db import Database
 from settings.routers import main_router
 from settings.shared import db
 
+load_dotenv()
 async def main():
     await db.init()
-    config = dotenv_values(".env")
+    config = dotenv_values("../.env")
 
-    bot_token = config.get("BOT_TOKEN")
+    bot_token = os.getenv("BOT_TOKEN")
 
     bot = Bot(token=bot_token)
     storage = MemoryStorage()
