@@ -48,7 +48,7 @@ class ChatGPT42AI:
                 "top_p": 0.9,
                 "image": "",
                 "max_tokens": 256,
-                "web_access": False
+                "web_access": True
             }
 
             # Асинхронный POST-запрос к API
